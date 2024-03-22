@@ -3,14 +3,17 @@ use std::collections::{HashMap, HashSet};
 // Assuming CellId is a type that uniquely identifies a cell.
 type CellId = String;
 
+#[derive(Debug)]
 pub struct DependencyGraph {
     edges: HashMap<CellId, Vec<CellId>>,
+    // incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
 }
 
 impl DependencyGraph {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             edges: HashMap::new(),
+            // incoming_edges: HashMap::new(),
         }
     }
 
