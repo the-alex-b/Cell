@@ -2,11 +2,25 @@ use prettytable::{Cell as DisplayCell, Row, Table};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
-enum CellType {
-    Text,
-    Integer,
-    Float,
+enum CellContent {
+    Text(String),
+    Integer(i32),
+    Float(f32),
     None,
+}
+
+impl CellContent {
+    pub fn to_display_string(&self) -> String {
+        match &self {
+            CellContent::Integer(value) => value.to_string(),
+            CellContent::Float(value) => format!("{:.2}", value),
+            CellContent::Text(value) => String::from(value),
+
+            // If the cell is a formula we need to evaluate the formula and return a string representation of the result
+            // CellContent::Formula(value) => String::from(value),
+            CellContent::None => String::from(""),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -14,30 +28,16 @@ struct Cell {
     pk: String,
     x: i32,
     y: i32,
-    string: Option<String>,
-    float: Option<f32>,
-    integer: Option<i32>,
-    cell_type: CellType,
+    cell_content: CellContent,
 }
 
 impl Cell {
-    fn new(
-        pk: String,
-        x: i32,
-        y: i32,
-        string: Option<String>,
-        float: Option<f32>,
-        integer: Option<i32>,
-        cell_type: CellType,
-    ) -> Cell {
+    fn new(pk: String, x: i32, y: i32, cell_content: CellContent) -> Cell {
         Cell {
             pk,
             x,
             y,
-            string: string,
-            float: float,
-            integer: integer,
-            cell_type,
+            cell_content,
         }
     }
 }
@@ -76,9 +76,9 @@ impl Spreadsheet {
             for x in self.viewport_x.0..=self.viewport_x.1 {
                 let key = format!("{}:{}", x, y);
                 if let Some(cell) = self.cells.get(&key) {
-                    row.push(DisplayCell::new(&cell.pk));
+                    row.push(DisplayCell::new(&cell.cell_content.to_display_string()));
                 } else {
-                    row.push(DisplayCell::new("Empty"));
+                    row.push(DisplayCell::new(""));
                 }
             }
             table.add_row(Row::new(row));
@@ -91,55 +91,42 @@ impl Spreadsheet {
 fn main() {
     let mut sheet = Spreadsheet::new();
 
-    let cell = Cell::new(
-        String::from("0:0"),
-        0,
-        0,
-        Some("Hallo".to_string()),
-        None,
-        None,
-        CellType::Integer,
-    );
+    let cell = Cell::new(String::from("0:0"), 0, 0, CellContent::Float(12.3));
 
     sheet.insert(cell);
 
-    let cell = Cell::new(
-        String::from("1:1"),
-        1,
-        1,
-        None,
-        Some(12.5),
-        None,
-        CellType::Integer,
-    );
+    let cell = Cell::new(String::from("1:1"), 1, 1, CellContent::Integer(2));
+
+    sheet.insert(cell);
+    let cell = Cell::new(String::from("1:1"), 1, 1, CellContent::Integer(5));
 
     sheet.insert(cell);
 
-    loop {
-        println!(
-            "Viewport is at x: {:?}, y: {:?}",
-            sheet.viewport_x, sheet.viewport_y
-        );
-        sheet.display();
-        println!("Use WASD to move the viewport, or Q to quit:");
+    // loop {
+    //     println!(
+    //         "Viewport is at x: {:?}, y: {:?}",
+    //         sheet.viewport_x, sheet.viewport_y
+    //     );
+    //     sheet.display();
+    //     println!("Use WASD to move the viewport, or Q to quit:");
 
-        let mut input = String::new();
-        std::io::stdin().read_line(&mut input).unwrap();
-        match input.trim() {
-            "w" | "W" => {
-                println!("W hit!");
-                sheet.move_viewport(0, -1)
-            }
-            "s" | "S" => sheet.move_viewport(0, 1),
-            "a" | "A" => sheet.move_viewport(-1, 0),
-            "d" | "D" => sheet.move_viewport(1, 0),
-            "q" | "Q" => break,
-            _ => println!("Invalid input, please use W, A, S, D to navigate, or Q to quit."),
-        }
+    //     let mut input = String::new();
+    //     std::io::stdin().read_line(&mut input).unwrap();
+    //     match input.trim() {
+    //         "w" | "W" => {
+    //             println!("W hit!");
+    //             sheet.move_viewport(0, -1)
+    //         }
+    //         "s" | "S" => sheet.move_viewport(0, 1),
+    //         "a" | "A" => sheet.move_viewport(-1, 0),
+    //         "d" | "D" => sheet.move_viewport(1, 0),
+    //         "q" | "Q" => break,
+    //         _ => println!("Invalid input, please use W, A, S, D to navigate, or Q to quit."),
+    //     }
 
-        // Clear the console. This command works on most UNIX-like systems.
-        // Windows users might see odd behavior.
-        print!("\x1B[2J\x1B[1;1H");
-    }
+    //     // Clear the console. This command works on most UNIX-like systems.
+    //     // Windows users might see odd behavior.
+    //     print!("\x1B[2J\x1B[1;1H");
+    // }
     sheet.display();
 }
