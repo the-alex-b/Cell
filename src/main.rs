@@ -4,6 +4,9 @@ use std::collections::HashMap;
 mod cell;
 use crate::cell::{Cell, CellContent};
 
+mod dependency_graph;
+use crate::dependency_graph::DependencyGraph;
+
 #[derive(Debug)]
 struct Spreadsheet {
     cells: HashMap<String, Cell>,
@@ -53,10 +56,6 @@ impl Spreadsheet {
 }
 
 fn main() {
-    let res = CellContent::Text("asdas".to_string()) + CellContent::Integer(5);
-
-    dbg!(res);
-
     let mut sheet = Spreadsheet::new();
 
     let cell = Cell::new(0, 0, CellContent::Float(12.3));
@@ -100,5 +99,6 @@ fn main() {
     //     // Windows users might see odd behavior.
     //     print!("\x1B[2J\x1B[1;1H");
     // }
+
     sheet.display();
 }

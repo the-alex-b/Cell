@@ -39,8 +39,10 @@ impl CellContent {
 
     // Add a method to evaluate the content, possibly requiring context like a spreadsheet or cell collection  TODO: cache?
     pub fn evaluate(&self, cells: &HashMap<String, Cell>) -> CellContent {
+        println!("Cell is evaluated");
         match self {
             CellContent::Formula(formula_str) => {
+                println!("Cell is calculated");
                 // For simplicity, assume formula_str is "x:y OP x:y", e.g., "1:1 + 2:2"
                 let parts: Vec<&str> = formula_str.split_whitespace().collect();
                 if parts.len() == 3 {
@@ -88,7 +90,7 @@ impl Cell {
             pk,
             x,
             y,
-            cell_content,
+            cell_content, // CellContent::None,
         }
     }
 
