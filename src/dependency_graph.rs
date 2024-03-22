@@ -17,12 +17,12 @@ impl DependencyGraph {
         }
     }
 
-    fn add_dependency(&mut self, from: CellId, to: CellId) {
+    pub fn add_dependency(&mut self, from: CellId, to: CellId) {
         self.edges.entry(from).or_insert_with(Vec::new).push(to);
     }
 
     // Checks if adding a dependency would create a cycle.
-    fn would_create_cycle(&self, start: &CellId) -> bool {
+    pub fn would_create_cycle(&self, start: &CellId) -> bool {
         let mut visited = HashSet::new();
         let mut stack = HashSet::new();
         self.dfs(start, &mut visited, &mut stack)

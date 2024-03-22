@@ -10,17 +10,18 @@ fn main() {
 
     let cell = Cell::new(0, 0, CellContent::Float(12.3));
     sheet.insert(cell);
+    // dbg!(cell.to_owned());
 
-    let cell = Cell::new(1, 1, CellContent::Integer(2));
-    sheet.insert(cell);
+    // let cell = Cell::new(1, 1, CellContent::Integer(2));
+    // sheet.insert(cell);
 
-    let cell = Cell::new(2, 2, CellContent::Text("Hello World".to_string()));
-    sheet.insert(cell);
+    // let cell = Cell::new(2, 2, CellContent::Text("Hello World".to_string()));
+    // sheet.insert(cell);
 
-    let cell = Cell::new(3, 3, CellContent::Formula("0:0 + 1:1".to_string()));
-    sheet.insert(cell);
+    // let cell = Cell::new(3, 3, CellContent::Formula("0:0 + 1:1".to_string()));
+    // sheet.insert(cell);
 
-    let cell = Cell::new(4, 4, CellContent::Formula("3:3 + 1:1".to_string()));
+    let cell = Cell::new(4, 4, CellContent::Formula("0:0 + 0:0".to_string()));
     sheet.insert(cell);
 
     // loop {

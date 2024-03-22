@@ -23,7 +23,25 @@ impl Spreadsheet {
     }
 
     pub fn insert(&mut self, cell: Cell) {
-        self.cells.insert(cell.pk.to_string(), cell);
+        self.cells.insert(cell.pk.to_string(), cell.clone()); // Insert the cell in the hashmap
+
+        // Add to dependency graph if this is a formula and check for circulariry
+        if let CellContent::Formula(formula) = &cell.cell_content {
+            // println!("{}", formula);
+            dbg!(formula.clone());
+            // let dependencies = parse_formula_dependencies(formula); // Here we need the dependent cells
+
+            // for dep in dependencies {
+            //     self.dependency_graph
+            //         .add_dependency(cell.uuid.clone(), dep.uuid.clone());
+            // }
+
+            // // Check for cycles after adding dependencies
+            // if self.dependency_graph.would_create_cycle(&cell.uuid) {
+            //     println!("Cycle detected! Reverting changes...");
+            //     // Handle cycle detection, e.g., revert changes or alert the user
+            // }
+        }
     }
 
     // New method to move the viewport
