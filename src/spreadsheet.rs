@@ -23,27 +23,23 @@ impl Spreadsheet {
     }
 
     pub fn add_to_spreadsheet(&mut self, cell: Cell) {
-        self.cells.insert(cell.pk.to_string(), cell.clone()); // Insert the cell in the hashmap
+        // Hashmap entry for visualization
+        self.cells.insert(cell.pk.to_string(), cell.clone());
 
-        // Add to dependency graph if this is a formula and check for circulariry
+        // Dependency graph for relations and calculation
         if let CellContent::Formula(_) = &cell.cell_content {
-            println!("Formulaa");
-            // println!("{}", formula);
-            // dbg!(formula.clone());
             let dependencies = cell.get_dependencies(&self.cells).unwrap();
-
             for dep in dependencies {
                 self.dependency_graph
                     .add_edge(cell.uuid.clone(), dep.uuid.clone());
             }
 
-            // // Check for cycles after adding dependencies
-            // if self.dependency_graph.would_create_cycle(&cell.uuid) {
-            //     println!("Cycle detected! Reverting changes...");
-            //     // Handle cycle detection, e.g., revert changes or alert the user
-            // }
+            // Check for cycles after adding dependencies
+            if self.dependency_graph.would_create_cycle(&cell.uuid) {
+                panic!("Cycle detected! Panic :O");
+                // Handle cycle detection, e.g., revert changes or alert the user
+            }
         } else {
-            // No formula so we add a single node
             self.dependency_graph.add_single_node(cell.uuid)
         }
     }
