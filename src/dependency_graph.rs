@@ -5,24 +5,34 @@ type CellId = String;
 
 #[derive(Debug, Clone)]
 pub struct DependencyGraph {
-    edges: HashMap<CellId, Vec<CellId>>,
-    // incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
+    outgoing_edges: HashMap<CellId, Vec<CellId>>,
+    incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
 }
 
 impl DependencyGraph {
     pub fn new() -> Self {
         Self {
-            edges: HashMap::new(),
-            // incoming_edges: HashMap::new(),
+            outgoing_edges: HashMap::new(),
+            incoming_edges: HashMap::new(),
         }
     }
 
     pub fn add_single_node(&mut self, node: CellId) {
-        self.edges.entry(node).or_insert_with(Vec::new);
+        self.outgoing_edges
+            .entry(node.clone())
+            .or_insert_with(Vec::new);
+        self.incoming_edges.entry(node).or_insert_with(Vec::new);
     }
 
     pub fn add_edge(&mut self, from: CellId, to: CellId) {
-        self.edges.entry(from).or_insert_with(Vec::new).push(to);
+        self.incoming_edges
+            .entry(from.clone())
+            .or_insert_with(Vec::new)
+            .push(to.clone());
+        self.outgoing_edges
+            .entry(to)
+            .or_insert_with(Vec::new)
+            .push(from);
     }
 
     // Checks if adding a dependency would create a cycle.
@@ -47,7 +57,7 @@ impl DependencyGraph {
             // Mark the node as visited and add it to the current path stack.
             stack.insert(node.clone());
 
-            if let Some(dependencies) = self.edges.get(node) {
+            if let Some(dependencies) = self.outgoing_edges.get(node) {
                 for dep in dependencies {
                     if self.dfs(dep, visited, stack) {
                         return true; // Cycle detected in a dependency.
@@ -65,11 +75,11 @@ impl DependencyGraph {
     pub fn topological_sort(&self) -> Result<Vec<CellId>, String> {
         let mut in_degree = HashMap::new();
         // Initialize in-degree of all vertices as 0.
-        for vertex in self.edges.keys() {
+        for vertex in self.outgoing_edges.keys() {
             in_degree.entry(vertex.clone()).or_insert(0);
         }
         // Fill the in-degree of vertices.
-        for deps in self.edges.values() {
+        for deps in self.outgoing_edges.values() {
             for dep in deps {
                 *in_degree.entry(dep.clone()).or_insert(0) += 1;
             }
@@ -88,7 +98,7 @@ impl DependencyGraph {
 
         while let Some(vertex) = queue.pop_front() {
             top_order.push(vertex.clone());
-            if let Some(deps) = self.edges.get(&vertex) {
+            if let Some(deps) = self.outgoing_edges.get(&vertex) {
                 for dep in deps {
                     let degree = in_degree.get_mut(dep).unwrap();
                     *degree -= 1;

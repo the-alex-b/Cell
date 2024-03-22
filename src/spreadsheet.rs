@@ -31,16 +31,16 @@ impl Spreadsheet {
             let dependencies = cell.get_dependencies(&self.cells).unwrap();
             for dep in dependencies {
                 self.dependency_graph
-                    .add_edge(cell.uuid.clone(), dep.uuid.clone());
+                    .add_edge(cell.pk.clone(), dep.pk.clone());
             }
 
             // Check for cycles after adding dependencies
-            if self.dependency_graph.would_create_cycle(&cell.uuid) {
+            if self.dependency_graph.would_create_cycle(&cell.pk) {
                 panic!("Cycle detected! Panic :O");
                 // Handle cycle detection, e.g., revert changes or alert the user
             }
         } else {
-            self.dependency_graph.add_single_node(cell.uuid)
+            self.dependency_graph.add_single_node(cell.pk)
         }
     }
 

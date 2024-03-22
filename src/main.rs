@@ -27,6 +27,12 @@ fn main() {
     let cell = Cell::new(5, 5, CellContent::Formula("4:4 + 1:1".to_string()));
     sheet.add_to_spreadsheet(cell);
 
+    let cell = Cell::new(6, 6, CellContent::Formula("4:4 + 5:5".to_string()));
+    sheet.add_to_spreadsheet(cell);
+
+    let cell = Cell::new(2, 1, CellContent::Formula("0:0 + 4:4".to_string()));
+    sheet.add_to_spreadsheet(cell);
+
     sheet.display();
 
     dbg!(sheet.dependency_graph.clone());

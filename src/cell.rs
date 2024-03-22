@@ -79,7 +79,7 @@ impl CellContent {
 #[derive(Debug, Clone)]
 pub struct Cell {
     pub pk: String,
-    pub uuid: String,
+    // pub uuid: String,
     pub x: i32,
     pub y: i32,
     pub cell_content: CellContent,
@@ -88,10 +88,10 @@ pub struct Cell {
 impl Cell {
     pub fn new(x: i32, y: i32, cell_content: CellContent) -> Cell {
         let pk = format!("{}:{}", x, y);
-        let uuid = Uuid::new_v4().to_string();
+        // let uuid = Uuid::new_v4().to_string();
         Cell {
             pk,
-            uuid,
+            // uuid,
             x,
             y,
             cell_content, // CellContent::None,
