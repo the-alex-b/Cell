@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 // Assuming CellId is a type that uniquely identifies a cell.
 type CellId = String;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DependencyGraph {
     edges: HashMap<CellId, Vec<CellId>>,
     // incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
@@ -59,5 +59,52 @@ impl DependencyGraph {
             stack.remove(node);
         }
         false
+    }
+
+    // Perform a topological sort of the nodes (cells) in the graph.
+    pub fn topological_sort(&self) -> Result<Vec<CellId>, String> {
+        let mut in_degree = HashMap::new();
+        // Initialize in-degree of all vertices as 0.
+        for vertex in self.edges.keys() {
+            in_degree.entry(vertex.clone()).or_insert(0);
+        }
+        // Fill the in-degree of vertices.
+        for deps in self.edges.values() {
+            for dep in deps {
+                *in_degree.entry(dep.clone()).or_insert(0) += 1;
+            }
+        }
+
+        let mut queue: VecDeque<CellId> = VecDeque::new();
+        // Enqueue all vertices with in-degree 0.
+        for (vertex, &degree) in &in_degree {
+            if degree == 0 {
+                queue.push_back(vertex.clone());
+            }
+        }
+
+        let mut visited_count = 0;
+        let mut top_order = vec![];
+
+        while let Some(vertex) = queue.pop_front() {
+            top_order.push(vertex.clone());
+            if let Some(deps) = self.edges.get(&vertex) {
+                for dep in deps {
+                    let degree = in_degree.get_mut(dep).unwrap();
+                    *degree -= 1;
+                    if *degree == 0 {
+                        queue.push_back(dep.clone());
+                    }
+                }
+            }
+            visited_count += 1;
+        }
+
+        if visited_count != in_degree.len() {
+            // There is a cycle in the graph.
+            return Err("Cycle detected in the dependency graph".to_string());
+        }
+
+        Ok(top_order)
     }
 }

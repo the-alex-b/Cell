@@ -24,12 +24,13 @@ fn main() {
     let cell = Cell::new(4, 4, CellContent::Formula("0:0 + 1:1".to_string()));
     sheet.add_to_spreadsheet(cell);
 
-    let cell = Cell::new(1, 1, CellContent::Formula("4:4 + 1:1".to_string()));
+    let cell = Cell::new(5, 5, CellContent::Formula("4:4 + 1:1".to_string()));
     sheet.add_to_spreadsheet(cell);
 
-    // sheet.display();
+    sheet.display();
 
-    dbg!(sheet.dependency_graph);
+    dbg!(sheet.dependency_graph.clone());
+    dbg!(sheet.dependency_graph.topological_sort().unwrap());
 }
 
 // loop {
