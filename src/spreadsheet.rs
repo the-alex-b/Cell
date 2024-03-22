@@ -7,7 +7,7 @@ use crate::dependency_graph::DependencyGraph;
 #[derive(Debug)]
 pub struct Spreadsheet {
     cells: HashMap<String, Cell>,
-    dependency_graph: DependencyGraph,
+    pub dependency_graph: DependencyGraph,
     viewport_x: (i32, i32),
     viewport_y: (i32, i32),
 }
@@ -22,25 +22,29 @@ impl Spreadsheet {
         }
     }
 
-    pub fn insert(&mut self, cell: Cell) {
+    pub fn add_to_spreadsheet(&mut self, cell: Cell) {
         self.cells.insert(cell.pk.to_string(), cell.clone()); // Insert the cell in the hashmap
 
         // Add to dependency graph if this is a formula and check for circulariry
-        if let CellContent::Formula(formula) = &cell.cell_content {
+        if let CellContent::Formula(_) = &cell.cell_content {
+            println!("Formulaa");
             // println!("{}", formula);
-            dbg!(formula.clone());
-            // let dependencies = parse_formula_dependencies(formula); // Here we need the dependent cells
+            // dbg!(formula.clone());
+            let dependencies = cell.get_dependencies(&self.cells).unwrap();
 
-            // for dep in dependencies {
-            //     self.dependency_graph
-            //         .add_dependency(cell.uuid.clone(), dep.uuid.clone());
-            // }
+            for dep in dependencies {
+                self.dependency_graph
+                    .add_edge(cell.uuid.clone(), dep.uuid.clone());
+            }
 
             // // Check for cycles after adding dependencies
             // if self.dependency_graph.would_create_cycle(&cell.uuid) {
             //     println!("Cycle detected! Reverting changes...");
             //     // Handle cycle detection, e.g., revert changes or alert the user
             // }
+        } else {
+            // No formula so we add a single node
+            self.dependency_graph.add_single_node(cell.uuid)
         }
     }
 

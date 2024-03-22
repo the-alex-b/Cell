@@ -101,6 +101,24 @@ impl Cell {
     pub fn get_value(&self, cells: &HashMap<String, Cell>) -> CellContent {
         self.cell_content.evaluate(cells)
     }
+
+    pub fn get_dependencies(&self, cells: &HashMap<String, Cell>) -> Result<Vec<Cell>, String> {
+        match self.cell_content.clone() {
+            CellContent::Formula(formula_str) => {
+                println!("Finding dependencies");
+                let parts: Vec<&str> = formula_str.split_whitespace().collect();
+                let left = cells.get(parts[0]).unwrap();
+
+                let right = cells.get(parts[2]).unwrap();
+
+                let mut dependencies = Vec::new();
+                dependencies.push(left.clone());
+                dependencies.push(right.clone());
+                Ok(dependencies)
+            }
+            _ => Err("Can't parse formula".to_string()),
+        }
+    }
 }
 
 impl Add for Cell {
