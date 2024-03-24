@@ -6,10 +6,10 @@ use crate::dependency_graph::DependencyGraph;
 
 #[derive(Debug)]
 pub struct Spreadsheet {
-    cells: HashMap<String, Cell>,
+    pub cells: HashMap<String, Cell>,
     pub dependency_graph: DependencyGraph,
-    viewport_x: (i32, i32),
-    viewport_y: (i32, i32),
+    pub viewport_x: (i32, i32),
+    pub viewport_y: (i32, i32),
 }
 
 impl Spreadsheet {
@@ -22,11 +22,15 @@ impl Spreadsheet {
         }
     }
 
-    pub fn add_to_spreadsheet(&mut self, cell: Cell) {
-        // Hashmap entry for visualization
+    pub fn add_to_spreadsheet(&mut self, mut cell: Cell) {
+        // Calculate the result
+        let result = cell.cell_content.evaluate(&self.cells);
+        cell.result = result;
+
+        // --- HASHMAP entry for visualization
         self.cells.insert(cell.pk.to_string(), cell.clone());
 
-        // Dependency graph for relations and calculation
+        // --- DEPENDENCY GRAPH for relations and calculation
         if let CellContent::Formula(_) = &cell.cell_content {
             let dependencies = cell.get_dependencies(&self.cells).unwrap();
             for dep in dependencies {
@@ -45,7 +49,7 @@ impl Spreadsheet {
     }
 
     // New method to move the viewport
-    fn move_viewport(&mut self, dx: i32, dy: i32) {
+    pub fn move_viewport(&mut self, dx: i32, dy: i32) {
         self.viewport_x = (self.viewport_x.0 + dx, self.viewport_x.1 + dx);
         self.viewport_y = (self.viewport_y.0 + dy, self.viewport_y.1 + dy);
     }
@@ -58,9 +62,7 @@ impl Spreadsheet {
             for x in self.viewport_x.0..=self.viewport_x.1 {
                 let key = format!("{}:{}", x, y);
                 if let Some(cell) = self.cells.get(&key) {
-                    row.push(DisplayCell::new(
-                        &cell.get_value(&self.cells).to_display_string(),
-                    ));
+                    row.push(DisplayCell::new(&cell.get_value()));
                 } else {
                     row.push(DisplayCell::new(""));
                 }

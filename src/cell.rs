@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::ops::{Add, Div, Mul, Sub};
-use uuid::Uuid;
+
+use crate::spreadsheet::Spreadsheet;
 
 const UNSUPPORTED_STRING: &str = "!UNSUPPORTED";
 
@@ -83,23 +84,28 @@ pub struct Cell {
     pub x: i32,
     pub y: i32,
     pub cell_content: CellContent,
+    pub result: CellContent,
 }
 
 impl Cell {
     pub fn new(x: i32, y: i32, cell_content: CellContent) -> Cell {
         let pk = format!("{}:{}", x, y);
-        // let uuid = Uuid::new_v4().to_string();
+
+        let result: CellContent = CellContent::None;
+
         Cell {
             pk,
-            // uuid,
             x,
             y,
-            cell_content, // CellContent::None,
+            cell_content,
+            result,
         }
+
+        // Evaluate cell to determine display value, if static just write to string
     }
 
-    pub fn get_value(&self, cells: &HashMap<String, Cell>) -> CellContent {
-        self.cell_content.evaluate(cells)
+    pub fn get_value(&self) -> String {
+        self.result.to_display_string()
     }
 
     pub fn get_dependencies(&self, cells: &HashMap<String, Cell>) -> Result<Vec<Cell>, String> {
