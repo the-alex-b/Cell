@@ -6,14 +6,14 @@ type CellId = String;
 #[derive(Debug, Clone)]
 pub struct DependencyGraph {
     outgoing_edges: HashMap<CellId, Vec<CellId>>,
-    incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
+    // incoming_edges: HashMap<CellId, Vec<CellId>>, // For reverse lookup
 }
 
 impl DependencyGraph {
     pub fn new() -> Self {
         Self {
             outgoing_edges: HashMap::new(),
-            incoming_edges: HashMap::new(),
+            // incoming_edges: HashMap::new(),
         }
     }
 
@@ -21,14 +21,14 @@ impl DependencyGraph {
         self.outgoing_edges
             .entry(node.clone())
             .or_insert_with(Vec::new);
-        self.incoming_edges.entry(node).or_insert_with(Vec::new);
+        // self.incoming_edges.entry(node).or_insert_with(Vec::new);
     }
 
     pub fn add_edge(&mut self, from: CellId, to: CellId) {
-        self.incoming_edges
-            .entry(from.clone())
-            .or_insert_with(Vec::new)
-            .push(to.clone());
+        // self.incoming_edges
+        // .entry(from.clone())
+        // .or_insert_with(Vec::new)
+        // .push(to.clone());
         self.outgoing_edges
             .entry(to)
             .or_insert_with(Vec::new)

@@ -8,12 +8,29 @@ use crate::spreadsheet::Spreadsheet;
 fn main() {
     let mut sheet = Spreadsheet::new();
 
-    let cell = Cell::new(0, 0, CellContent::Float(12.3));
+    let cell = Cell::new(0, 0, CellContent::Integer(2));
     sheet.add_to_spreadsheet(cell);
+    let cell = Cell::new(1, 0, CellContent::Integer(5));
+    sheet.add_to_spreadsheet(cell);
+    let cell = Cell::new(2, 0, CellContent::Integer(8));
+    sheet.add_to_spreadsheet(cell);
+
+    let cell = Cell::new(1, 1, CellContent::Formula("1:0 + 2:0".to_string()));
+    sheet.add_to_spreadsheet(cell);
+
+    let cell = Cell::new(0, 2, CellContent::Formula("1:1 + 0:0".to_string()));
+    sheet.add_to_spreadsheet(cell);
+
+    let cell = Cell::new(2, 2, CellContent::Integer(1));
+    sheet.add_to_spreadsheet(cell);
+
+    let cell = Cell::new(1, 3, CellContent::Formula("0:2 + 2:2".to_string()));
+    sheet.add_to_spreadsheet(cell);
+
     // dbg!(cell.to_owned());
 
-    let cell = Cell::new(1, 1, CellContent::Integer(2));
-    sheet.add_to_spreadsheet(cell);
+    // let cell = Cell::new(1, 1, CellContent::Integer(2));
+    // sheet.add_to_spreadsheet(cell);
 
     // let cell = Cell::new(2, 2, CellContent::Text("Hello World".to_string()));
     // sheet.insert(cell);
@@ -21,17 +38,17 @@ fn main() {
     // let cell = Cell::new(3, 3, CellContent::Formula("0:0 + 1:1".to_string()));
     // sheet.insert(cell);
 
-    let cell = Cell::new(4, 4, CellContent::Formula("0:0 + 1:1".to_string()));
-    sheet.add_to_spreadsheet(cell);
+    // let cell = Cell::new(4, 4, CellContent::Formula("0:0 + 1:1".to_string()));
+    // sheet.add_to_spreadsheet(cell);
 
-    let cell = Cell::new(5, 5, CellContent::Formula("4:4 + 1:1".to_string()));
-    sheet.add_to_spreadsheet(cell);
+    // let cell = Cell::new(5, 5, CellContent::Formula("4:4 + 1:1".to_string()));
+    // sheet.add_to_spreadsheet(cell);
 
-    let cell = Cell::new(6, 6, CellContent::Formula("4:4 + 5:5".to_string()));
-    sheet.add_to_spreadsheet(cell);
+    // let cell = Cell::new(6, 6, CellContent::Formula("4:4 + 5:5".to_string()));
+    // sheet.add_to_spreadsheet(cell);
 
-    let cell = Cell::new(2, 1, CellContent::Formula("0:0 + 4:4".to_string()));
-    sheet.add_to_spreadsheet(cell);
+    // let cell = Cell::new(2, 1, CellContent::Formula("0:0 + 4:4".to_string()));
+    // sheet.add_to_spreadsheet(cell);
 
     sheet.display();
 
