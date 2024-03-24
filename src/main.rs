@@ -11,6 +11,8 @@ use crate::cell_content::CellContent;
 mod viewer;
 use crate::viewer::Viewer;
 
+mod parser;
+
 fn main() {
     let mut sheet = Spreadsheet::new();
     let mut viewer = Viewer::new();

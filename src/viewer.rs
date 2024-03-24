@@ -26,7 +26,7 @@ impl Viewer {
             for x in self.viewport_x.0..=self.viewport_x.1 {
                 let key = format!("{}:{}", x, y);
                 if let Some(cell) = spreadsheet.cells.get(&key) {
-                    row.push(DisplayCell::new(&cell.get_value()));
+                    row.push(DisplayCell::new(&cell.result.to_display_string()));
                 } else {
                     row.push(DisplayCell::new(""));
                 }

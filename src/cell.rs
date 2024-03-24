@@ -29,10 +29,6 @@ impl Cell {
         // Evaluate cell to determine display value, if static just write to string
     }
 
-    pub fn get_value(&self) -> String {
-        self.result.to_display_string()
-    }
-
     pub fn get_dependencies(&self, cells: &HashMap<String, Cell>) -> Result<Vec<Cell>, String> {
         match self.cell_content.clone() {
             CellContent::Formula(formula_str) => {
