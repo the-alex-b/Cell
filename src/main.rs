@@ -8,8 +8,12 @@ use crate::spreadsheet::Spreadsheet;
 mod cell_content;
 use crate::cell_content::CellContent;
 
+mod viewer;
+use crate::viewer::Viewer;
+
 fn main() {
     let mut sheet = Spreadsheet::new();
+    let mut viewer = Viewer::new();
 
     let cell = Cell::new(0, 0, CellContent::Integer(2));
     sheet.add_to_spreadsheet(cell);
@@ -38,9 +42,9 @@ fn main() {
     loop {
         println!(
             "Viewport is at x: {:?}, y: {:?}",
-            sheet.viewport_x, sheet.viewport_y
+            viewer.viewport_x, viewer.viewport_y
         );
-        sheet.display();
+        viewer.display(&sheet);
         println!("Use WASD to move the viewport, or Q to quit:");
 
         let mut input = String::new();
@@ -48,11 +52,11 @@ fn main() {
         match input.trim() {
             "w" | "W" => {
                 println!("W hit!");
-                sheet.move_viewport(0, -1)
+                viewer.move_viewport(0, -1)
             }
-            "s" | "S" => sheet.move_viewport(0, 1),
-            "a" | "A" => sheet.move_viewport(-1, 0),
-            "d" | "D" => sheet.move_viewport(1, 0),
+            "s" | "S" => viewer.move_viewport(0, 1),
+            "a" | "A" => viewer.move_viewport(-1, 0),
+            "d" | "D" => viewer.move_viewport(1, 0),
             "q" | "Q" => break,
             _ => println!("Invalid input, please use W, A, S, D to navigate, or Q to quit."),
         }
