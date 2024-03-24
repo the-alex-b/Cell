@@ -1,8 +1,5 @@
-use crate::cell::Cell;
-use std::collections::HashMap;
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::Add;
 
-const UNSUPPORTED_STRING: &str = "!UNSUPPORTED";
 #[derive(Debug, Clone)]
 pub enum CellContent {
     Text(String),
@@ -25,43 +22,6 @@ impl CellContent {
             CellContent::None => String::from(""),
         }
     }
-
-    // Add a method to evaluate the content, possibly requiring context like a spreadsheet or cell collection  TODO: cache?
-    pub fn evaluate(&self, cells: &HashMap<String, Cell>) -> CellContent {
-        println!("Cell is evaluated");
-        match self {
-            CellContent::Formula(formula_str) => {
-                println!("Cell is calculated");
-                // For simplicity, assume formula_str is "x:y OP x:y", e.g., "1:1 + 2:2"
-                let parts: Vec<&str> = formula_str.split_whitespace().collect();
-                if parts.len() == 3 {
-                    // Simple validation
-                    let left = cells
-                        .get(parts[0])
-                        .unwrap()
-                        .cell_content
-                        .clone()
-                        .evaluate(cells);
-                    let right = cells
-                        .get(parts[2])
-                        .unwrap()
-                        .cell_content
-                        .clone()
-                        .evaluate(cells);
-                    match parts[1] {
-                        "+" => left + right,
-                        // "-" => left - right,
-                        // "*" => left * right,
-                        // "/" => left / right,
-                        _ => CellContent::Text(String::from(UNSUPPORTED_STRING)),
-                    }
-                } else {
-                    CellContent::Text(String::from(UNSUPPORTED_STRING))
-                }
-            }
-            _ => self.clone(),
-        }
-    }
 }
 
 impl Add for CellContent {
@@ -80,7 +40,7 @@ impl Add for CellContent {
             (Text(a), b) | (b, Text(a)) => Text(format!("{}{}", a, b.to_display_string())),
 
             // Catch all
-            _ => Text(UNSUPPORTED_STRING.to_string()),
+            _ => Text("Add cell_content failed".to_string()),
         }
     }
 }

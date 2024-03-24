@@ -15,7 +15,7 @@ mod parser;
 
 fn main() {
     let mut sheet = Spreadsheet::new();
-    let mut viewer = Viewer::new();
+    let viewer = Viewer::new();
 
     let cell = Cell::new(0, 0, CellContent::Integer(2));
     sheet.add_to_spreadsheet(cell);
@@ -36,8 +36,8 @@ fn main() {
     let cell = Cell::new(1, 3, CellContent::Formula("0:2 + 2:2".to_string()));
     sheet.add_to_spreadsheet(cell);
 
-    dbg!(sheet.dependency_graph.clone());
-    dbg!(sheet.dependency_graph.topological_sort().unwrap());
+    // dbg!(sheet.dependency_graph.clone());
+    // dbg!(sheet.dependency_graph.topological_sort().unwrap());
 
     viewer.display(&sheet);
 
