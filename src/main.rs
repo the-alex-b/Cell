@@ -1,9 +1,12 @@
 mod cell;
-use crate::cell::{Cell, CellContent};
+use crate::cell::Cell;
 mod dependency_graph;
 
 mod spreadsheet;
 use crate::spreadsheet::Spreadsheet;
+
+mod cell_content;
+use crate::cell_content::CellContent;
 
 fn main() {
     let mut sheet = Spreadsheet::new();
@@ -56,6 +59,6 @@ fn main() {
 
         // Clear the console. This command works on most UNIX-like systems.
         // Windows users might see odd behavior.
-        // print!("\x1B[2J\x1B[1;1H");
+        print!("\x1B[2J\x1B[1;1H");
     }
 }

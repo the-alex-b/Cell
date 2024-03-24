@@ -1,8 +1,10 @@
 use prettytable::{Cell as DisplayCell, Row, Table};
 use std::collections::HashMap;
 
-use crate::cell::{Cell, CellContent};
+use crate::cell::Cell;
 use crate::dependency_graph::DependencyGraph;
+
+use crate::cell_content::CellContent;
 
 #[derive(Debug)]
 pub struct Spreadsheet {
@@ -23,7 +25,7 @@ impl Spreadsheet {
     }
 
     pub fn add_to_spreadsheet(&mut self, mut cell: Cell) {
-        // Calculate the result
+        // TODO: combine evaluation step here with get_dependencies for adding to dependency graph.
         let result = cell.cell_content.evaluate(&self.cells);
         cell.result = result;
 
