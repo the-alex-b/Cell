@@ -39,7 +39,7 @@ fn main() {
     // dbg!(sheet.dependency_graph.clone());
     // dbg!(sheet.dependency_graph.topological_sort().unwrap());
 
-    viewer.display(&sheet);
+    // viewer.display(&sheet);
 
     let cell = Cell::new(1, 3, CellContent::Integer(30));
     sheet.add_to_spreadsheet(cell);

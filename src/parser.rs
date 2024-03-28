@@ -7,7 +7,6 @@ const UNSUPPORTED_STRING: &str = "!UNSUPPORTED";
 pub fn get_dependencies(cell: Cell, spreadsheet: &Spreadsheet) -> Result<Vec<Cell>, String> {
     match cell.cell_content.clone() {
         CellContent::Formula(formula_str) => {
-            println!("Finding dependencies");
             let parts: Vec<&str> = formula_str.split_whitespace().collect();
             let left = spreadsheet.cells.get(parts[0]).unwrap();
 
