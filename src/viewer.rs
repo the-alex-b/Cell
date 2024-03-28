@@ -13,8 +13,8 @@ impl eframe::App for Spreadsheet {
                 dbg!(self.cells.clone());
             };
 
-            let max_rows = 10;
-            let max_cols = 10;
+            let max_rows = 3;
+            let max_cols = 3;
 
             for row in 0..max_rows {
                 ui.horizontal(|ui| {

@@ -1,32 +1,16 @@
+mod application;
 mod cell;
-use crate::cell::Cell;
-mod dependency_graph;
-
-mod spreadsheet;
-use crate::spreadsheet::Spreadsheet;
-
 mod cell_content;
-use crate::cell_content::CellContent;
-
-mod viewer;
-// use crate::viewer::Viewer;
-
+mod dependency_graph;
 mod parser;
+mod spreadsheet;
+mod viewer;
 
-// use eframe::App;
-use eframe::egui;
+use crate::application::Application;
 
 fn main() {
-    let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
-        ..Default::default()
-    };
-
-    eframe::run_native(
-        "Confirm exit",
-        options,
-        Box::new(|_cc| Box::<Spreadsheet>::default()),
-    );
+    let application = Application::new();
+    application.start()
 
     // let mut spreadsheet = Spreadsheet::new();
 
