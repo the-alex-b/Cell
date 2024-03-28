@@ -41,6 +41,11 @@ fn main() {
 
     viewer.display(&sheet);
 
+    let cell = Cell::new(1, 3, CellContent::Integer(30));
+    sheet.add_to_spreadsheet(cell);
+
+    viewer.display(&sheet);
+
     // loop {
     //     println!(
     //         "Viewport is at x: {:?}, y: {:?}",

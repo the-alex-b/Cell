@@ -40,23 +40,30 @@ impl Spreadsheet {
         } else {
             self.dependency_graph.add_single_node(cell.clone().pk)
         }
-
-        self.re_evaluate_cells(cell.pk);
+        dbg!(cell.pk.clone());
+        self.evaluate_affected_cells(cell.pk);
     }
 
-    fn re_evaluate_cells(&mut self, pk: String) -> () {
-        let ordered_ids: Vec<String> = self.dependency_graph.topological_sort().unwrap(); // TODO: Get only affected ids instead of all ordered ids.
+    fn evaluate_affected_cells(&mut self, pk: String) -> () {
+        println!("Evaluate affected cells {}", pk.clone());
+        let filtered_ids = self.dependency_graph.get_affected_cells(&pk);
 
-        dbg!(ordered_ids.clone());
-        for pk in ordered_ids {
+        dbg!(filtered_ids.clone());
+        for pk in filtered_ids {
             // We clone here so we can pass it later to the evaluate cells method
             let spreadsheet_cells = self.cells.clone();
 
-            // Get the cell
+            // Get the c
             let cell: &mut Cell = self.cells.get_mut(&pk).unwrap();
             cell.evaluate_cell(spreadsheet_cells);
 
             // dbg!(cell);
         }
+    }
+
+    fn re_evaluate_all_cells(&mut self) {
+        // let ordered_ids: Vec<String> = self.dependency_graph.topological_sort().unwrap(); // TODO: Get only affected ids instead of all ordered ids.
+        // // dbg!(ordered_ids.clone());
+        todo!();
     }
 }

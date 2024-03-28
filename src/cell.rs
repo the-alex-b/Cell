@@ -32,14 +32,11 @@ impl Cell {
     pub fn evaluate_cell(&mut self, cells: HashMap<String, Cell>) -> () {
         match self.clone().cell_content {
             CellContent::Formula(formula_str) => {
-                println!("{}", formula_str);
                 // For simplicity, assume formula_str is "x:y OP x:y", e.g., "1:1 + 2:2"
                 let parts: Vec<&str> = formula_str.split_whitespace().collect();
                 if parts.len() == 3 {
                     let left = cells.get(parts[0]).unwrap().clone().result;
-                    dbg!(left.clone());
                     let right = cells.get(parts[2]).unwrap().clone().result;
-                    dbg!(right.clone());
                     let result = match parts[1] {
                         "+" => left + right,
                         // "-" => left - right,

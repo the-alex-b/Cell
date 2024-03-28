@@ -110,4 +110,27 @@ impl DependencyGraph {
 
         Ok(top_order)
     }
+
+    pub fn get_affected_cells(&self, updated_cell: &CellId) -> Vec<CellId> {
+        let mut affected_cells = Vec::new();
+        let mut visited = HashSet::new();
+        let mut to_visit = VecDeque::new();
+
+        to_visit.push_back(updated_cell.clone());
+        visited.insert(updated_cell.clone());
+        affected_cells.insert(0, updated_cell.clone());
+
+        while let Some(cell_id) = to_visit.pop_front() {
+            if let Some(dependent_cells) = self.outgoing_edges.get(&cell_id) {
+                for dep_cell in dependent_cells {
+                    if visited.insert(dep_cell.clone()) {
+                        to_visit.push_back(dep_cell.clone());
+                        affected_cells.push(dep_cell.clone());
+                    }
+                }
+            }
+        }
+
+        affected_cells
+    }
 }
