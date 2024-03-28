@@ -46,6 +46,8 @@ impl Spreadsheet {
 
     fn re_evaluate_cells(&mut self, pk: String) -> () {
         let ordered_ids: Vec<String> = self.dependency_graph.topological_sort().unwrap(); // TODO: Get only affected ids instead of all ordered ids.
+
+        dbg!(ordered_ids.clone());
         for pk in ordered_ids {
             // We clone here so we can pass it later to the evaluate cells method
             let spreadsheet_cells = self.cells.clone();
@@ -54,7 +56,7 @@ impl Spreadsheet {
             let cell: &mut Cell = self.cells.get_mut(&pk).unwrap();
             cell.evaluate_cell(spreadsheet_cells);
 
-            dbg!(cell);
+            // dbg!(cell);
         }
     }
 }
