@@ -10,21 +10,32 @@ impl eframe::App for Spreadsheet {
             if ui.button("Add cell").clicked() {
                 let cell = Cell::new(0, 0, CellContent::Integer(5));
                 self.add_to_spreadsheet(cell);
-                dbg!(self.cells.clone());
+
+                let cell = Cell::new(1, 0, CellContent::Integer(5));
+                self.add_to_spreadsheet(cell);
+
+                let cell = Cell::new(2, 0, CellContent::Integer(8));
+                self.add_to_spreadsheet(cell);
+
+                let cell = Cell::new(1, 1, CellContent::Formula("1:0 + 2:0".to_string()));
+                self.add_to_spreadsheet(cell);
+
+                let cell = Cell::new(2, 2, CellContent::Formula("1:1 + 2:0".to_string()));
+                self.add_to_spreadsheet(cell);
             };
 
-            let max_rows = 3;
-            let max_cols = 3;
+            let max_rows = 10;
+            let max_cols = 10;
 
-            for row in 0..max_rows {
-                ui.horizontal(|ui| {
+            egui::Grid::new("Grid").striped(true).show(ui, |ui| {
+                for row in 0..max_rows {
                     for col in 0..max_cols {
-                        // Example cell ID format "A1", "A2", ...
                         let cell_id = format!("{}:{}", col, row);
                         if let Some(cell) = self.cells.get_mut(&cell_id) {
-                            let response =
-                                ui.text_edit_singleline(&mut cell.result.to_display_string());
-                            dbg!(cell.clone());
+                            let response = ui.text_edit_singleline(
+                                &mut cell.result.to_display_string().to_owned(),
+                            );
+
                         //
                         //     // Here you can handle the response, e.g., to update cell content
                         } else {
@@ -32,8 +43,10 @@ impl eframe::App for Spreadsheet {
                             ui.text_edit_singleline(&mut ("").to_owned());
                         }
                     }
-                });
-            }
+                    ui.end_row()
+                }
+                ui.end_row();
+            });
         });
     }
 }
