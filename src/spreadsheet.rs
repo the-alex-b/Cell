@@ -6,7 +6,7 @@ use crate::dependency_graph::DependencyGraph;
 use crate::cell_content::CellContent;
 use crate::parser::get_dependencies;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Spreadsheet {
     pub cells: HashMap<String, Cell>,
     pub dependency_graph: DependencyGraph,

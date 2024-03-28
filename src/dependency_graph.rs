@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 // Assuming CellId is a type that uniquely identifies a cell.
 type CellId = String;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DependencyGraph {
     outgoing_edges: HashMap<CellId, Vec<CellId>>,
 }

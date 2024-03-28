@@ -1,40 +1,39 @@
+use crate::cell::Cell;
+use crate::cell_content::CellContent;
 use crate::spreadsheet::Spreadsheet;
-use prettytable::{Cell as DisplayCell, Row, Table};
+use eframe::egui::{self};
 
-pub struct Viewer {
-    pub viewport_x: (i32, i32),
-    pub viewport_y: (i32, i32),
-}
+impl eframe::App for Spreadsheet {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Cell");
+            if ui.button("Add cell").clicked() {
+                let cell = Cell::new(0, 0, CellContent::Integer(5));
+                self.add_to_spreadsheet(cell);
+                dbg!(self.cells.clone());
+            };
 
-impl Viewer {
-    pub fn new() -> Viewer {
-        Viewer {
-            viewport_x: (0, 10),
-            viewport_y: (0, 10),
-        }
-    }
-    pub fn move_viewport(&mut self, dx: i32, dy: i32) {
-        self.viewport_x = (self.viewport_x.0 + dx, self.viewport_x.1 + dx);
-        self.viewport_y = (self.viewport_y.0 + dy, self.viewport_y.1 + dy);
-    }
+            let max_rows = 10;
+            let max_cols = 10;
 
-    pub fn display(&self, spreadsheet: &Spreadsheet) {
-        let mut table = Table::new();
-
-        for y in self.viewport_y.0..=self.viewport_y.1 {
-            let mut row = Vec::new();
-            for x in self.viewport_x.0..=self.viewport_x.1 {
-                let key = format!("{}:{}", x, y);
-                if let Some(cell) = spreadsheet.cells.get(&key) {
-                    row.push(DisplayCell::new(&cell.result.to_display_string()));
-                } else {
-                    row.push(DisplayCell::new(""));
-                }
+            for row in 0..max_rows {
+                ui.horizontal(|ui| {
+                    for col in 0..max_cols {
+                        // Example cell ID format "A1", "A2", ...
+                        let cell_id = format!("{}:{}", col, row);
+                        if let Some(cell) = self.cells.get_mut(&cell_id) {
+                            let response =
+                                ui.text_edit_singleline(&mut cell.result.to_display_string());
+                            dbg!(cell.clone());
+                        //
+                        //     // Here you can handle the response, e.g., to update cell content
+                        } else {
+                            // Placeholder for cells not in the map
+                            ui.text_edit_singleline(&mut ("").to_owned());
+                        }
+                    }
+                });
             }
-            table.add_row(Row::new(row));
-        }
-
-        table.printstd(); // Prints the table to stdout
+        });
     }
 }
-// New method to move the viewport
